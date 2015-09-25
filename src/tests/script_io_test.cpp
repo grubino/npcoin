@@ -149,10 +149,7 @@ BOOST_AUTO_TEST_CASE(test_block_chain_serialize) {
     ;
 
   block_properties props = {
-    subst
-    , expr_str
-    , txs
-    , mtree
+    expr_str
     , big_integer("192837")
     , big_integer("192873")
     , big_integer("98734")
@@ -160,8 +157,10 @@ BOOST_AUTO_TEST_CASE(test_block_chain_serialize) {
     , 1
     , static_cast<unsigned long>(time(NULL))
     , 1
-    , BLOCK_VALID_UNKNOWN
     , 1
+    , mtree
+    , subst
+    , txs
   };
 
   std::stringstream ss;

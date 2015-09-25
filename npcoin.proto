@@ -1,0 +1,28 @@
+package npcoin;
+
+message BlockProperties {
+	required string work_expr = 1;
+	required string tour_order_hash = 2;
+	required string merkle_root_hash = 3;
+	required string prev_block_hash = 4;
+	required int64 height = 5;
+	required int64 transaction_count = 6;
+	required int64 difficulty = 7;
+	required int64 version = 8;
+	repeated string merkle_tree = 9;
+	message Substitution {
+		required string identifier = 1;
+		required string value = 2;
+	}
+	repeated Substitution substitutions = 10;
+	message BlockTransaction {
+		repeated string inputs = 1;
+		required string script = 2;
+	}
+	repeated BlockTransaction transactions = 11;
+}
+
+message Block {
+	required string addressee = 1;
+	required BlockProperties properties = 2;
+}

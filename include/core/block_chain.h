@@ -39,34 +39,6 @@ boost::listS
 typedef boost::graph_traits<block_chain>::vertex_descriptor block_descriptor;
 typedef std::shared_ptr<block_chain> block_chain_ptr;
 
-enum block_status {
-  BLOCK_VALID_UNKNOWN      =    0
-  // parsed, version ok, hash satisfies claimed PoW,
-  // 1 <= vtx count <= max, timestamp not in future
-  , BLOCK_VALID_HEADER       =    1 
-  // parent found, difficulty matches, timestamp >= median previous, checkpoint
-  , BLOCK_VALID_TREE         =    2
-  // only first tx is coinbase, 2 <= coinbase input script length <= 100,
-  // transactions valid, no duplicate txids, sigops, size, merkle root
-  , BLOCK_VALID_TRANSACTIONS =    3
-  // outputs do not overspend inputs, no double spends, 
-  // coinbase output ok, immature coinbase spends, BIP30
-  , BLOCK_VALID_CHAIN        =    4
-  // scripts/signatures ok
-  , BLOCK_VALID_SCRIPTS      =    5
-  , BLOCK_VALID_MASK         =    7
-  // full block available in blk*.dat
-  , BLOCK_HAVE_DATA          =    8
-  // undo data available in rev*.dat
-  , BLOCK_HAVE_UNDO          =   16
-  , BLOCK_HAVE_MASK          =   24
-  // stage after last reached validness failed
-  , BLOCK_FAILED_VALID       =   32
-  // descends from failed block
-  , BLOCK_FAILED_CHILD       =   64
-  , BLOCK_FAILED_MASK        =   96
-};
-
 struct block_transaction {
   std::vector<big_integer> in;
   std::string script;
@@ -74,10 +46,7 @@ struct block_transaction {
 };
 
 struct block_properties {
-  std::map<std::string, script_ast::numeric_constant_> substitutions;
   std::string work_expr;
-  std::vector<block_transaction> transactions;
-  std::vector<big_integer> merkle_tree;
   big_integer tour_order_hash;
   big_integer merkle_root_hash;
   big_integer prev_block_hash;
@@ -85,8 +54,10 @@ struct block_properties {
   size_t transaction_count;
   size_t time;
   size_t difficulty;
-  block_status status;
   size_t version;
+  std::vector<big_integer> merkle_tree;
+  std::map<std::string, script_ast::numeric_constant_> substitutions;
+  std::vector<block_transaction> transactions;
 };
 
 struct block_edge_properties {};
@@ -159,7 +130,6 @@ namespace boost { namespace serialization {
       ar & v.transaction_count;
       ar & v.time;
       ar & v.difficulty;
-      ar & v.status;
       ar & v.version;
     }
 
